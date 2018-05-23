@@ -1,7 +1,5 @@
 ######################
-#    François Oder   #
-#   Roxan Pulicani   #
-#  Cyrielle Canezza  #
+#   Franco and al.   #
 #     interface      #
 #  graphique pour le #
 #       morpion      #
@@ -10,7 +8,7 @@
 
 from tkinter import *
 from tkinter.messagebox import *
-import morpion
+import IA_morpion_class as mp
 
 
 def Rond(x1, y1):
@@ -57,7 +55,7 @@ while entree_1 == False or entree_2 == False :
         entree_2 = False
 
 
-Cases, QTPL, C2QTPL, QTPL2Score, C2Score = morpion.Create(n, p)
+IA_mp = mp.IA_morpion(n, p)
 
 
 #définition de a: variable globale qui permet de savoir quel joueur joue
@@ -100,16 +98,16 @@ for j in range (p+1):
 #initialisation dans le cas où c'est l'ordinateur qui commence
 if a ==1:
     if len(C) == 0:
-        coup_ordi = morpion.lc2ind(n // 2, p // 2, n, p)
-        coup_ordi = morpion.CoupJouer(Cases, C2Score)
-        Cases[coup_ordi] = 1
-        QTPL2Score, C2Score = morpion.UpdateScore(coup_ordi, Cases, QTPL, C2QTPL, QTPL2Score, C2Score)
-        (l_ordi, c_ordi) = morpion.ind2lc(coup_ordi, n, p)
+        coup_ordi = IA_mp.lc2ind(n // 2, p // 2)
+        coup_ordi = IA_mp.CoupJouer()
+        IA_mp.Cases[coup_ordi] = 1
+        IA_mp.UpdateScore(coup_ordi)
+        (l_ordi, c_ordi) = IA_mp.ind2lc(coup_ordi)
         Rond(c_ordi * 50 + 25, l_ordi * 50 + 25)
 #ajout du coup dans la variable C
         C += [[(coup_ordi * 50), (l_ordi * 50)]]
 
-        if morpion.Victoire(Cases, QTPL):
+        if IA_mp.Victoire():
             showinfo(title='Défaite', message='Vous avez perdu')
             Mafenetre.destroy()
         a = 0
@@ -117,7 +115,7 @@ if a ==1:
 
 def pointeur(event):
 #fonction qui permet qui construit la boucle de jeu (activée par clic)
-    global a, C, Cases, QTPL, C2QTPL, QTPL2Score, C2Score
+    global a, C, IA_mp
 
 #définit X et Y comme les coordonnées du clic
     X = event.x
@@ -134,10 +132,10 @@ def pointeur(event):
 #dessine la croix dans la case qui correspond au clic
             Croix(X-X%50+25,Y-Y%50+25)
 #ajout dans les variables du morpion
-            Cases[morpion.lc2ind(Y//50, X//50, n, p)] = -1
-            QTPL2Score, C2Score = morpion.UpdateScore(morpion.lc2ind(Y//50, X//50, n, p), Cases, QTPL, C2QTPL, QTPL2Score, C2Score)
+            IA_mp.Cases[IA_mp.lc2ind(Y//50, X//50)] = -1
+            IA_mp.UpdateScore(IA_mp.lc2ind(Y//50, X//50))
 #vérifie si l'utilisateur a gagné
-            if morpion.Victoire(Cases, QTPL):
+            if IA_mp.Victoire():
                 showinfo(title='Victoire', message='Vous avez gagné')
                 Mafenetre.destroy()
 #changement de joueur
@@ -152,16 +150,16 @@ def pointeur(event):
     if a == 1:
 
 #appel au morpion
-        coup_ordi = morpion.CoupJouer(Cases, C2Score)
-        Cases[coup_ordi] = 1
-        QTPL2Score, C2Score = morpion.UpdateScore(coup_ordi, Cases, QTPL, C2QTPL, QTPL2Score, C2Score)
-        (l_ordi, c_ordi) = morpion.ind2lc(coup_ordi, n, p)
+        coup_ordi = IA_mp.CoupJouer()
+        IA_mp.Cases[coup_ordi] = 1
+        IA_mp.UpdateScore(coup_ordi)
+        (l_ordi, c_ordi) = IA_mp.ind2lc(coup_ordi)
 #dessine le disque dans la case correspondante au jeu du morpion
         Rond(c_ordi * 50 + 25, l_ordi * 50 + 25)
 #ajout de la case à la variable C
         C += [[(coup_ordi * 50), (l_ordi * 50)]]
 #vérifie si l'ordinateur a gagné
-        if morpion.Victoire(Cases, QTPL):
+        if IA_mp.Victoire():
             showinfo(title='Défaite', message='Vous avez perdu')
             Mafenetre.destroy()
         a =0

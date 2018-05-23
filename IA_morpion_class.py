@@ -1,7 +1,5 @@
 ######################
-#    François Oder   #
-#   Roxan Pulicani   #
-#  Cyrielle Canezza  #
+#   Franco and al.   #
 #     morpion.py     #
 #     10/05/2018     #
 # fonctions de base  #
