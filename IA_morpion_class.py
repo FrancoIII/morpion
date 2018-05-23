@@ -81,6 +81,78 @@ class IA_morpion:
         self.QTPL2Score = [ScoreVide for _ in range(len(self.QTPL))]
         self.C2Score = [self.Evalc(i) for i in range(nbl * nbc)]
 
+    @property
+    def nbl(self):
+        return self.__nbl
+
+    @nbl.setter
+    def nbl(self, nbl):
+        self.__nbl = nbl
+
+    @property
+    def nbc(self):
+        return self.__nbc
+
+    @nbc.setter
+    def nbc(self, nbc):
+        self.__nbc = nbc
+
+    @property
+    def sym(self):
+        return self.__sym
+
+    @sym.setter
+    def sym(self, Symboles):
+        self.__sym = Symboles
+
+    @property
+    def scores(self):
+        return self.__scores
+
+    @scores.setter
+    def scores(self, Scores):
+        self.__scores = Scores
+
+    @property
+    def Cases(self):
+        return self.__Cases
+
+    @Cases.setter
+    def Cases(self, Cases):
+        self.__Cases = Cases
+
+    @property
+    def QTPL(self):
+        return self.__QTPL
+
+    @QTPL.setter
+    def QTPL(self, QTPL):
+        self.__QTPL = QTPL
+
+    @property
+    def C2QTPL(self):
+        return self.__C2QTPL
+
+    @C2QTPL.setter
+    def C2QTPL(self, C2QTPL):
+        self.__C2QTPL = C2QTPL
+
+    @property
+    def QTPL2Score(self):
+        return self.__QTPL2Score
+
+    @QTPL2Score.setter
+    def QTPL2Score(self, QTPL2Score):
+        self.__QTPL2Score = QTPL2Score
+
+    @property
+    def C2Score(self):
+        return self.__C2Score
+
+    @C2Score.setter
+    def C2Score(self, C2Score):
+        self.__C2Score = C2Score
+
     def lc2ind(self, numl, numc):
         """
 
