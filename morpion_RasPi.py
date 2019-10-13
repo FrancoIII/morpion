@@ -16,6 +16,10 @@ GPIO_OUT_columns = [22, 23, 24, 25, 26, 27, 28]
 
 
 def GPIO_initmodes():
+    """
+    Initiate RasPi's pins that we need
+    :return: None
+    """
     for r in GPIO_IN_rows:
         GPIO.setmode(r, GPIO.IN)
     for c in GPIO_IN_columns:
@@ -31,7 +35,7 @@ def cases2dict(IA):
 
     :type IA: IA_mp_class.IA_morpion
     :param IA:
-    :return:
+    :return: the dictionary of lists coresponding to IA.Cases list
     """
     res = {}
     for i in range(IA.nbl):
@@ -47,7 +51,7 @@ def outprint(IA):
     Display IA's pawns on physical interface
     :type IA: IA_mp_class.IA_morpion
     :param IA:
-    :return:
+    :return: None
     """
     cases_dict = cases2dict(IA)
     for row in cases_dict:
@@ -60,6 +64,12 @@ def outprint(IA):
 
 
 def caseInput(IA):
+    """
+    Check if players added a new pawn
+    :type IA: IA_mp_class.IA_morpion
+    :param IA:
+    :return: the index of the pawn if there is a new one, None otherwise
+    """
     cases_dict = cases2dict(IA)
     for row in cases_dict:
         GPIO.setup(GPIO_IN_rows[row], GPIO.HIGH)
@@ -71,3 +81,23 @@ def caseInput(IA):
 
 
 IAmp = IA_mp_class.IA_morpion(7, 7)
+GPIO_initmodes()
+
+
+# mainloop
+while True:
+    outprint(IAmp)
+    coup_joueur = caseInput(IAmp)
+    outprint(IAmp)
+    if coup_joueur is not None:
+        outprint(IAmp)
+        IAmp.Cases[coup_joueur] = -1
+        outprint(IAmp)
+        IAmp.UpdateScore(coup_joueur)
+        outprint(IAmp)
+        coup = IAmp.CoupJouer()
+        outprint(IAmp)
+        IAmp.Cases[coup] = 1
+        outprint(IAmp)
+        IAmp.UpdateScore(coup)
+        outprint(IAmp)
