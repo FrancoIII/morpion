@@ -59,4 +59,15 @@ def outprint(IA):
         GPIO.setup(GPIO_OUT_rows[row], GPIO.LOW)
 
 
+def caseInput(IA):
+    cases_dict = cases2dict(IA)
+    for row in cases_dict:
+        GPIO.setup(GPIO_IN_rows[row], GPIO.HIGH)
+        for col in cases_dict[row]:
+            if GPIO.input(GPIO_IN_columns[col]) and cases_dict[row][col] == 0:
+                return IA.lc2ind(row, col)
+        GPIO.setup(GPIO_IN_rows[row], GPIO.LOW)
+    return
+
+
 IAmp = IA_mp_class.IA_morpion(7, 7)
