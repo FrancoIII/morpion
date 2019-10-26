@@ -5,7 +5,7 @@
 # IN : GPIO 1-7 as rows, GPIO 8-14 as columns
 # OUT : GPPIO 15-21 as rows, GPIO 22-28 as columns
 
-import IA_morpion_class as IA_mp_class
+import IA_morpion_4_class as IA_mp_class
 import RPi.GPIO as GPIO
 import time
 

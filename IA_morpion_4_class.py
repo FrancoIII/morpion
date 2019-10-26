@@ -4,13 +4,13 @@
 #     10/05/2018     #
 # fonctions de base  #
 #  pour le morpion   #
-# Version à 5 pionts #
+# Version à 4 pionts #
 ######################
 
 
 class IA_morpion:
     def_sym = [0, 1, -1]
-    def_scores = [1, 4, 80, 1500, 20000, 1000000, 0, -2, -40, -180, -10000, -1000000]
+    def_scores = [1, 4, 80, 1500, 1000000, 0, -2, -40, -180, -1000000]
 
     def __init__(self, nbl, nbc, Symboles=def_sym, Scores=def_scores):
         """
@@ -27,57 +27,51 @@ class IA_morpion:
         Vide, ScoreVide = Symboles[0], Scores[0]
         # les cases
         self.Cases = [Vide for _ in range(nbl * nbc)]
-        # les quintuplés
-        self.QTPL = []
+        # les quadruplés
+        self.QDPL = []
         qtpl = 0
-        # les quintuplés qui contiennent la case
-        self.C2QTPL = [[] for _ in range(nbl * nbc)]
-        # quintuplés horizontaux
+        # les quadruplés qui contiennent la case
+        self.C2QDPL = [[] for _ in range(nbl * nbc)]
+        # quadruplés horizontaux
         for i in range(nbl):
-            for j in range(nbc - 4):
-                self.QTPL += [(self.lc2ind(i, j), self.lc2ind(i, j + 1), self.lc2ind(i, j + 2), self.lc2ind(i, j + 3),
-                               self.lc2ind(i, j + 4))]
-                self.C2QTPL[self.lc2ind(i, j)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i, j + 1)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i, j + 2)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i, j + 3)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i, j + 4)] += [qtpl]
+            for j in range(nbc - 3):
+                self.QDPL += [(self.lc2ind(i, j), self.lc2ind(i, j + 1), self.lc2ind(i, j + 2), self.lc2ind(i, j + 3))]
+                self.C2QDPL[self.lc2ind(i, j)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i, j + 1)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i, j + 2)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i, j + 3)] += [qtpl]
                 qtpl += 1
-        # quintuplés verticaux
+        # quadruplés verticaux
         for j in range(nbc):
-            for i in range(nbl - 4):
-                self.QTPL += [(self.lc2ind(i, j), self.lc2ind(i + 1, j), self.lc2ind(i + 2, j), self.lc2ind(i + 3, j),
-                               self.lc2ind(i + 4, j))]
-                self.C2QTPL[self.lc2ind(i, j)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 1, j)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 2, j)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 3, j)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 4, j)] += [qtpl]
+            for i in range(nbl - 3):
+                self.QDPL += [(self.lc2ind(i, j), self.lc2ind(i + 1, j), self.lc2ind(i + 2, j), self.lc2ind(i + 3, j))]
+                self.C2QDPL[self.lc2ind(i, j)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i + 1, j)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i + 2, j)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i + 3, j)] += [qtpl]
                 qtpl += 1
-        # quintuplés diagonaux, vers le bas à droite
-        for i in range(nbl - 4):
-            for j in range(nbc - 4):
-                self.QTPL += [(self.lc2ind(i, j), self.lc2ind(i + 1, j + 1), self.lc2ind(i + 2, j + 2),
-                               self.lc2ind(i + 3, j + 3), self.lc2ind(i + 4, j + 4))]
-                self.C2QTPL[self.lc2ind(i, j)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 1, j + 1)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 2, j + 2)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 3, j + 3)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 4, j + 4)] += [qtpl]
+        # quadruplés diagonaux, vers le bas à droite
+        for i in range(nbl - 3):
+            for j in range(nbc - 3):
+                self.QDPL += [(self.lc2ind(i, j), self.lc2ind(i + 1, j + 1), self.lc2ind(i + 2, j + 2),
+                               self.lc2ind(i + 3, j + 3))]
+                self.C2QDPL[self.lc2ind(i, j)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i + 1, j + 1)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i + 2, j + 2)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i + 3, j + 3)] += [qtpl]
                 qtpl += 1
-        # quintuplés diagonaux, vers le bas à gauche
-        for i in range(nbl - 4):
-            for j in range(4, nbc):
-                self.QTPL += [(self.lc2ind(i, j), self.lc2ind(i + 1, j - 1), self.lc2ind(i + 2, j - 2),
-                               self.lc2ind(i + 3, j - 3), self.lc2ind(i + 4, j - 4))]
-                self.C2QTPL[self.lc2ind(i, j)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 1, j - 1)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 2, j - 2)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 3, j - 3)] += [qtpl]
-                self.C2QTPL[self.lc2ind(i + 4, j - 4)] += [qtpl]
+        # quadruplés diagonaux, vers le bas à gauche
+        for i in range(nbl - 3):
+            for j in range(3, nbc):
+                self.QDPL += [(self.lc2ind(i, j), self.lc2ind(i + 1, j - 1), self.lc2ind(i + 2, j - 2),
+                               self.lc2ind(i + 3, j - 3))]
+                self.C2QDPL[self.lc2ind(i, j)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i + 1, j - 1)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i + 2, j - 2)] += [qtpl]
+                self.C2QDPL[self.lc2ind(i + 3, j - 3)] += [qtpl]
                 qtpl += 1
-        # les scores des quintuplés
-        self.QTPL2Score = [ScoreVide for _ in range(len(self.QTPL))]
+        # les scores des quadruplés
+        self.QDPL2Score = [ScoreVide for _ in range(len(self.QDPL))]
         self.C2Score = [self.Evalc(i) for i in range(nbl * nbc)]
 
     @property
@@ -166,55 +160,55 @@ class IA_morpion:
         self.__Cases = Cases
 
     @property
-    def QTPL(self):
+    def QDPL(self):
         """
 
-        :return: la liste des quintuplés du damier
+        :return: la liste des quadruplés du damier
         """
-        return self.__QTPL
+        return self.__QDPL
 
-    @QTPL.setter
-    def QTPL(self, QTPL):
+    @QDPL.setter
+    def QDPL(self, QDPL):
         """
 
-        :param QTPL: la liste des quintuplés du damier
+        :param QDPL: la liste des quadruplés du damier
         :return: None
         """
-        self.__QTPL = QTPL
+        self.__QDPL = QDPL
 
     @property
-    def C2QTPL(self):
+    def C2QDPL(self):
         """
 
-        :return: la liste des liste des quintuplés contenant une certaine case, pour chaque case
+        :return: la liste des liste des quadruplés contenant une certaine case, pour chaque case
         """
-        return self.__C2QTPL
+        return self.__C2QDPL
 
-    @C2QTPL.setter
-    def C2QTPL(self, C2QTPL):
+    @C2QDPL.setter
+    def C2QDPL(self, C2QDPL):
         """
 
-        :param C2QTPL: la liste des liste des quintuplés contenant une certaine case, pour chaque case
+        :param C2QDPL: la liste des liste des quadruplés contenant une certaine case, pour chaque case
         :return: None
         """
-        self.__C2QTPL = C2QTPL
+        self.__C2QDPL = C2QDPL
 
     @property
-    def QTPL2Score(self):
+    def QDPL2Score(self):
         """
 
-        :return: la liste des scores des quintuplés
+        :return: la liste des scores des quadruplés
         """
-        return self.__QTPL2Score
+        return self.__QDPL2Score
 
-    @QTPL2Score.setter
-    def QTPL2Score(self, QTPL2Score):
+    @QDPL2Score.setter
+    def QDPL2Score(self, QDPL2Score):
         """
 
-        :param QTPL2Score: la liste des scores des quintuplés
+        :param QDPL2Score: la liste des scores des quadruplés
         :return: None
         """
-        self.__QTPL2Score = QTPL2Score
+        self.__QDPL2Score = QDPL2Score
 
     @property
     def C2Score(self):
@@ -257,22 +251,22 @@ class IA_morpion:
         :return: le score de cette case (ré-évalué)
         """
         res = 0
-        for qtpl in self.C2QTPL[ind]:
-            res += abs(self.QTPL2Score[qtpl])
+        for qtpl in self.C2QDPL[ind]:
+            res += abs(self.QDPL2Score[qtpl])
         return res
 
     def Evalq(self, qtpl):
         """
 
-        :param qtpl: un numéro de quintuplé
-        :return: le score de ce quintuplé (ré-évalué)
+        :param qtpl: un numéro de quadruplé
+        :return: le score de ce quadruplé (ré-évalué)
         """
         O, X = self.sym[1], self.sym[2]
         ScoreVide, ScoreO, ScoreOO, ScoreOOO = self.scores[0], self.scores[1], self.scores[2], self.scores[3]
         ScoreOOOO, ScoreOOOOO , ScoreXXXX, ScoreXXXXX = self.scores[4], self.scores[5], self.scores[10], self.scores[11]
         ScoreOX, ScoreX, ScoreXX, ScoreXXX = self.scores[6], self.scores[7], self.scores[8], self.scores[9]
         L = []
-        for c in self.QTPL[qtpl]:
+        for c in self.QDPL[qtpl]:
             L += [self.Cases[c]]
         if O in L:
             L.remove(O)
@@ -283,9 +277,6 @@ class IA_morpion:
                 if O in L:
                     L.remove(O)
                     if O in L:
-                        L.remove(O)
-                        if O in L:
-                            return ScoreOOOOO
                         return ScoreOOOO
                     return ScoreOOO
                 return ScoreOO
@@ -297,9 +288,6 @@ class IA_morpion:
                 if X in L:
                     L.remove(X)
                     if X in L:
-                        L.remove(X)
-                        if X in L:
-                            return ScoreXXXXX
                         return ScoreXXXX
                     return ScoreXXX
                 return ScoreXX
@@ -308,14 +296,14 @@ class IA_morpion:
 
     def UpdateScore(self, coup):
         """
-        Mets à jour les scores de cases et de quintuplés après un coup
+        Mets à jour les scores de cases et de quadruplés après un coup
         :param coup: l'indice d'une case où l'on vient de jouer
         :return: None
         """
         UpdateCases = set()
-        for qtpl in self.C2QTPL[coup]:
-            self.QTPL2Score[qtpl] = self.Evalq(qtpl)
-            for case in self.QTPL[qtpl]:
+        for qtpl in self.C2QDPL[coup]:
+            self.QDPL2Score[qtpl] = self.Evalq(qtpl)
+            for case in self.QDPL[qtpl]:
                 UpdateCases.add(case)
         for case in UpdateCases:
             self.C2Score[case] = self.Evalc(case)
@@ -351,14 +339,14 @@ class IA_morpion:
         :return: Le booléen indiquant si un joueur a gagné
         """
         O, X = self.sym[1], self.sym[2]
-        QTPL_C = []
-        for qtpl in range(len(self.QTPL)):
+        QDPL_C = []
+        for qtpl in range(len(self.QDPL)):
             qtpl_c = []
-            for case in self.QTPL[qtpl]:
+            for case in self.QDPL[qtpl]:
                 qtpl_c += [self.Cases[case]]
-            QTPL_C += [qtpl_c]
-        if [O, O, O, O, O] in QTPL_C:
+            QDPL_C += [qtpl_c]
+        if [O, O, O, O, O] in QDPL_C:
             return 1
-        elif [X, X, X, X, X] in QTPL_C:
-            return 1
+        elif [X, X, X, X, X] in QDPL_C:
+            return 2
         return 0
