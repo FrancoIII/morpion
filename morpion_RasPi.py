@@ -13,6 +13,9 @@ GPIO_IN_rows = [1, 2, 3, 4, 5, 6, 7]
 GPIO_IN_columns = [8, 9, 10, 11, 12, 13, 14]
 GPIO_OUT_rows = [15, 16, 17, 18, 19, 20, 21]
 GPIO_OUT_columns = [22, 23, 24, 25, 26, 27, 28]
+GPIO_OUT_ground = [32]
+GPIO_OUT_leds = [29, 30]
+GPIO_IN_reset = [31]
 
 
 def GPIO_initmodes():
@@ -28,6 +31,12 @@ def GPIO_initmodes():
         GPIO.setmode(r, GPIO.OUT, initial=GPIO.LOW)
     for c in GPIO_OUT_columns:
         GPIO.setmode(c, GPIO.OUT, initial=GPIO.HIGH)
+    for g in GPIO_OUT_ground:
+        GPIO.setmode(g, GPIO.OUT, initial=GPIO.LOW)
+    for p in GPIO_OUT_leds:
+        GPIO.setmode(p, GPIO.OUT, initial=GPIO.LOW)
+    for s in GPIO_IN_reset:
+        GPIO.setmode(s, GPIO.IN)
 
 
 def cases2dict(IA):
@@ -80,24 +89,30 @@ def caseInput(IA):
     return
 
 
-IAmp = IA_mp_class.IA_morpion(7, 7)
-GPIO_initmodes()
+def playLoop():
+    IAmp = IA_mp_class.IA_morpion(7, 7)
+    while not IAmp.Victoire():
+        outprint(IAmp)
+        coup_joueur = caseInput(IAmp)
+        outprint(IAmp)
+        if coup_joueur is not None:
+            outprint(IAmp)
+            IAmp.Cases[coup_joueur] = -1
+            outprint(IAmp)
+            IAmp.UpdateScore(coup_joueur)
+            outprint(IAmp)
+            coup = IAmp.CoupJouer()
+            outprint(IAmp)
+            IAmp.Cases[coup] = 1
+            outprint(IAmp)
+            IAmp.UpdateScore(coup)
+            outprint(IAmp)
+    GPIO.setup(GPIO_OUT_leds[IAmp.Victoire() - 1], GPIO.HIGH)
 
 
-# mainloop
 while True:
-    outprint(IAmp)
-    coup_joueur = caseInput(IAmp)
-    outprint(IAmp)
-    if coup_joueur is not None:
-        outprint(IAmp)
-        IAmp.Cases[coup_joueur] = -1
-        outprint(IAmp)
-        IAmp.UpdateScore(coup_joueur)
-        outprint(IAmp)
-        coup = IAmp.CoupJouer()
-        outprint(IAmp)
-        IAmp.Cases[coup] = 1
-        outprint(IAmp)
-        IAmp.UpdateScore(coup)
-        outprint(IAmp)
+    GPIO_initmodes()
+    playLoop()
+    while not GPIO.input(GPIO_IN_reset[0]):
+        pass
+    time.sleep(2)
